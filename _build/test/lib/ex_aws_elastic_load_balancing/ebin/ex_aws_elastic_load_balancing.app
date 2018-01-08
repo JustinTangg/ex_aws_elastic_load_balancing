@@ -1,0 +1,9 @@
+{application,ex_aws_elastic_load_balancing,
+             [{applications,[kernel,stdlib,elixir,logger,poison,hackney,
+                             ex_doc,sweet_xml,ex_aws]},
+              {description,"ex_aws_elastic_load_balancing"},
+              {modules,['Elixir.ExAws.ElasticLoadBalancing',
+                        'Elixir.ExAws.ElasticLoadBalancing.Parsers']},
+              {registered,[]},
+              {vsn,"2.0.0"},
+              {extra_applications,[logger]}]}.

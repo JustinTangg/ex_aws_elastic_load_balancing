@@ -1,0 +1,39 @@
+if Code.ensure_loaded?(SweetXml) do
+  defmodule ExAws.ElasticLoadBalancing.Parsers do
+    use ExAws.Operation.Query.Parser
+
+    def parse({:ok, %{body: xml} = resp}, :describe_load_balancers) do
+      parsed_body =
+        xml
+        |> SweetXml.xpath(
+          ~x"//DescribeLoadBalancersResponse",
+          load_balancers: load_balancers_xml_description(),
+          request_id: ~x"./ResponseMetadata/RequestId/text()"s
+        )
+      {:ok, Map.put(resp, :body, parsed_body)}
+    end
+
+    def parse(val, _), do: val
+
+    defp load_balancers_xml_description do
+      [
+        ~x"./DescribeLoadBalancersResult/LoadBalancerDescriptions/member"l,
+        load_balancer_name: ~x"./LoadBalancerName/text()"s,
+        dns_name: ~x"./DNSName/text()"s,
+        canonical_hosted_zone_name: ~x"./CanonicalHostedZoneName/text()"s,
+        canonical_hosted_zone_name_id: ~x"./CanonicalHostedZoneNameID/text()"s,
+        availability_zones: ~x"./AvailabilityZones/member/text()"ls,
+        vpc_id: ~x"./VpcId/text()"s,
+        instances: ~x"./Instances/member/InstanceId/text()"ls,
+        security_groups: ~x"./SecurityGroups/member/text()"ls,
+        created_time: ~x"./CreatedTime/text()"s,
+        scheme: ~x"./Scheme/text()"s
+      ]
+    end
+    
+  end
+else
+  defmodule ExAws.Cloudwatch.Parsers do
+    def parse(val, _), do: val
+  end
+end
